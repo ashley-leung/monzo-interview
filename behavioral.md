@@ -1,4 +1,4 @@
-# monzo-behavioral
+# behavioral
 
 ## Can you tell me about a time you made a mistake?
 We all make mistakes, of course, that's okay but what I tried to do is, I do a self-introspection to have a clear vision of what made me do that mistake and how can I avoid in future task. But first of all, once I realised I made a mistake, I tried to find an immeidate soltuion for it.
