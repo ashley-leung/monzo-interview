@@ -189,3 +189,23 @@ type CrawlResult = ScrapeResult & {
 ```
 
 `scraper.ts` returns `ScrapeResult`. `crawl.ts` promotes it to `CrawlResult` by adding `depth` before calling `onCrawlResult`. Every consumer then gets a type-system guarantee that `depth` is always present — no defensive `!== undefined` checks needed. The optional was a leaky abstraction: `depth` isn't part of fetching a page, it's part of orchestrating a crawl, so it belongs on the type that represents the crawl-layer result.
+
+---                                                                                                                                                            
+Q: You added maxDepth and maxConcurrency — neither was required. Why?                                                                                          
+                                                                                                                                                               
+A: maxConcurrency is a safety mechanism, not a feature. Without it, the crawler fires an unbounded number of concurrent HTTP requests — one per discovered link. Against a large site this can exhaust file descriptors, overwhelm the target server, or get the client IP rate-limited or banned. A bounded concurrency pool (defaulting to 5) makes the crawler safe to run without coordination overhead. The implementation uses a Set<Promise> + Promise.race so throughput stays high — we never stall waiting for slow requests when there are pending items in the queue.
+
+maxDepth is a circuit breaker against infinite or cyclical graphs. Web graphs aren't trees — sites can form link cycles that make unbounded BFS loop forever (or until memory is exhausted). Even with the visited-set guard, a deeply interlinked site with millions of unique pages could run indefinitely. maxDepth gives the caller a hard stop. It defaults to undefined (infinite) so the base behavior is unchanged — it's an opt-in escape hatch, not a restriction.               
+
+Tradeoffs:
+|                      | maxConcurrency                                                                 | maxDepth                                      |
+|----------------------|---------------------------------------------------------------------------------|-----------------------------------------------|
+| Problem it solves    | Unbounded parallel requests exhaust file descriptors and hammer the target     | Cyclic/deep graphs cause unbounded runtime and memory growth |
+| Benefit              | Predictable resource usage; respects rate limits                               | Bounded runtime; predictable memory ceiling   |
+| Cost                 | Lower raw throughput vs. fully parallel                                        | May miss content at deeper levels             |
+| Default behavior     | 5 (safe out of the box)                                                        | undefined (infinite — opt-in restriction)     |
+| What breaks without it | File descriptor exhaustion, IP bans, OOM                                     | Infinite crawl on cyclic graphs               |
+
+Follow-up the interviewer might ask: "Why not use p-limit instead of rolling your own concurrency pool?"
+
+Rolling it with Set + Promise.race avoids a dependency and makes the scheduler visible in the code — the reviewer can see exactly when tasks are drained and how backpressure works. p-limit is a fine choice in production, but in an interview context it obscures the mechanism.       
