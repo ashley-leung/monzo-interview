@@ -50,6 +50,38 @@ No. JavaScript is single-threaded — there's no true parallelism, only interlea
 
 No. The outer while condition is `queue.length > 0 || inFlight.size > 0`, so we only exit when both are empty. New URLs are added to `queue` synchronously inside `processQueueItem` before the function returns, which means before the `.finally()` that removes the task from `inFlight`, which means before `Promise.race` propagates its resolve to the outer loop. So when the outer loop checks the queue after each race, it always sees the complete picture. The only way to exit early would be if `processQueueItem` threw unhandled, which can't happen because `scrape` catches all errors internally and the `onCrawlResult` callback is wrapped in a try/catch.
 
+--- 
+**Q: Could two concurrent fetches visit the same URL twice?** 
+Yes — there's a TOCTOU race. `visited.add(link)` happens inside `processQueueItem`, which runs concurrently. If two in-flight tasks both discover the same link and both call `visited.has()` before either calls `visited.add()`, they both pass the check and both enqueue it. The fix is to claim the URL at the moment it's first seen, in the driver loop, before any task is dispatched: 
+
+```typescript
+for (const link of links) { 
+  if (!visited.has(link)) { 
+    visited.add(link);  // claim before enqueue 
+    queue.push({ url: link, depth: depth + 1 }); 
+  } 
+} 
+```
+This works because the driver loop runs on the single JS event loop thread — the for loop itself is synchronous, so there's no interleaving between has() and add().
+
+---
+
+**Q: Why didn't your tests catch this?**
+All tests run with maxConcurrency: 1, so tasks never interleave.
+To surface the race I'd add a test with maxConcurrency: 5 where multiple mocked pages return the same overlapping link, then assert it's only visited once. 
+
+---
+**Q: Why is processQueueItem defined inside crawl()?**
+What's the downside? It's a closure over queue, visited, and options — convenient because it avoids threading those through as parameters. The downside is it can't be imported and unit tested in isolation; any test of it is implicitly an integration test of the whole crawl loop. At this scale it's fine. If the per-URL logic grew more complex — robots.txt checks, priority scoring, per-host rate limiting — I'd extract it into a named module function and pass dependencies explicitly, which also makes them mockable.
+
+---
+**Q: What's missing from your test suite?**
+A few gaps I'd prioritise:
+1. Concurrent deduplication — a test with maxConcurrency > 1 and overlapping links across pages, asserting each URL is visited exactly once. This would have caught the race above.
+2. Scraper edge cases — the redirect-out-of-scope path and non-HTML content-type path both have code but no tests; straightforward to add with nock.
+3. Fetch timeout — AbortSignal.timeout(5000) is untested. I'd either mock a hanging response or make the timeout configurable so it can be injected in tests.
+4. env.ts — no coverage for missing or invalid env values like NaN for MAX_CONCURRENCY. That's a real failure mode since it's the user-facing entry point.
+
 ---
 
 ## URL Handling
