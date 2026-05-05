@@ -1,29 +1,61 @@
 # behavioral
+Q1. Led a complex project 
+- What was it, distill complexity
+- Stakeholders, alignment, communication
+- Tracking (data) and success
 
-## Do you have another example of that?
+Ownership of complex work.
+Led delivery of work with:
+- Ambiguity
+- Multiple stakeholders
+- Meaningful risk
+- Can articulate their decisions, not just the process.
+Strong signal
+“I realised we were over-committing, so I reset expectations with product.”
 
-## Can you explain that to me as though you were talking to a child?
+Q2. Unforeseen obstacle
+- About reaction and management of this, recover and adapt, reflect and learn
+- Could be an expansion on q1 and same project
+- What was it and what did you do?
+- Adaptation to it
+- Managing expectations
+- How could you anticipate it?
 
-## How did you feel about that?
+Decision-making under pressure.
+Handles:
+- Missed assumptions
+- Production incidents
+- Delivery risk
+- Communicates clearly and early.
+Strong signal
+“Here’s what went wrong, here’s what we told stakeholders, and here’s what changed.”
 
-## What would your perfect role look like?
+Q3. Persuasion
+- Brought people to your way of thinkings. 
+- Find root cause and then finding out what matters to those objecting
+- Persuade about what?
+- Diverse perspectives, did they help to shape it
+- Tactics to convince, data and empathy are key, e.g. POC, demo, market research, presentation, spreadsheet, writing, informal chat, literature review, etc.) 
 
-## Can you tell me about a time you made a mistake?
-We all make mistakes, of course, that's okay but what I tried to do is, I do a self-introspection to have a clear vision of what made me do that mistake and how can I avoid in future task. But first of all, once I realised I made a mistake, I tried to find an immeidate soltuion for it.
+Stakeholder management beyond updates.
+Proactively manages:
+- Conflicting priorities
+- Pushback
+- Tradeoffs
+- Influences direction, not just execution.
+Strong signal
+“Product wanted X, but we couldn’t safely deliver it in time, so I proposed Y.”
 
-## Give me an example of how you worked to fix a mistake?
+Q4. Coaching and mentoring, 
+- proactive is better, multiple methods best adapt to the persons needs
+- Led to it, approach
+- Results and learnings
 
-## Can you clarify your personal contribution to the project?
-
-## What would a colleague say is the best thing about working with you?
-In all of my peer reviews, the common theme was that I'm a team player, helpful,
-I take feedback really well and always act to improve on those feedback.
-For weakness, I do remember in difficulty delegating, I tried fixing things myself instead of asking for help from colleagues at an earlier stage. That's something I've been trying to improve and it's a goal of mine for this year to ask for help so I can be more efficient.
-
-## What’s your superpower?
-
-## What was the defining moment in your career that led you to where you are today?
-
-## Talk me through a project you're most proud of from start to finish.
-
-## What do you think working for us is like?”
+Mentorship as leverage
+Mentorship is:
+- Intentional
+- Repeatable
+- Outcome-driven
+- Goes beyond onboarding.
+Weak L40 signal
+Mentorship = helping someone get up to speed once.
