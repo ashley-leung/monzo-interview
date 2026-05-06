@@ -23,15 +23,13 @@ Success meant:
 - Production readiness with clear observability and runbooks
 
 ### Action
-First, I distilled complexity into a simple model by defining the rule of:
+**First**, I distilled complexity into a simple model by defining the rule of:
 
 “Only transfer ownership when two signals are true: purchase complete + physical authentication complete.”
 
 This helped align stakeholders and guided architecture decisions.
 
----
-
-Second, I lead a key architectural decision under ambiguity
+**Second**, I lead a key architectural decision under ambiguity
 
 We needed to choose the event source for triggering transfers:
 
@@ -49,14 +47,12 @@ My reasoning:
 I explicitly reset expectations with product:
 We are trading short-term delivery for long-term system integrity.
 
----
+**Thirdly**, I drove cross-team alignment with:
 
-Thirdly, I drove cross-team alignment with
-
-Product → scope and timelines
-Internal Web3 teams → event contracts (wallet, portfoolio)
-External marketplace teams → Federated GraphQL
-3rd party (Arianee) → blockchain integration
+- Product → scope and timelines
+- Internal Web3 teams → event contracts (wallet, portfoolio)
+- External marketplace teams → Federated GraphQL
+- 3rd party (Arianee) → blockchain integration
 
 To keep alignment:
 
@@ -72,6 +68,7 @@ Even though the partnership was later paused for commercial reasons, the system 
 - On-call incidents dropped from ~3/week → <1/month
 - Architecture became the template for the next partnership, reducing their ramp-up from weeks to days
 
+--- 
 
 ```
 What they are looking for:
