@@ -219,8 +219,7 @@ Instead of pushing my idea immediately, I asked:
 “What risks are you most worried about that E2E tests would catch?”
 
 This surfaced that their main concern was:
-
-Cross-service integration failures in production
+- Cross-service integration failures in production
 
 That helped me understand their position wasn’t about preference — it was about risk mitigation.
 
@@ -243,11 +242,11 @@ I suggested a testing pyramid approach:
 I explicitly compared both approaches:
 
 - E2E-heavy:
-    ✅ High confidence in full flows
-    ❌ Slow, flaky, expensive to maintain
+   - ✅ High confidence in full flows
+   - ❌ Slow, flaky, expensive to maintain
 - Pyramid:
-    ✅ Faster feedback, easier debugging, scalable
-    ❌ Requires discipline to choose the right E2E coverage
+   - ✅ Faster feedback, easier debugging, scalable
+   - ❌ Requires discipline to choose the right E2E coverage
 
 **Fourthly** Used data and examples to persuade
 
