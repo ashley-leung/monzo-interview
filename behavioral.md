@@ -68,23 +68,22 @@ Even though the partnership was later paused for commercial reasons, the system 
 - On-call incidents dropped from ~3/week → <1/month
 - Architecture became the template for the next partnership, reducing their ramp-up from weeks to days
 
---- 
-
-```
-What they are looking for:
+## What they are looking for:
 - What was it, distill complexity
 - Stakeholders, alignment, communication
 - Tracking (data) and success
+- Ownership of complex work
+- Led delivery of work with
+    - Ambiguity
+    - Multiple stakeholders
+    - Meaningful risk
+    - Can articulate their decisions, not just the process.
 
-Ownership of complex work.
-Led delivery of work with:
-- Ambiguity
-- Multiple stakeholders
-- Meaningful risk
-- Can articulate their decisions, not just the process.
 Strong signal
 “I realised we were over-committing, so I reset expectations with product.”
-```
+
+--- 
+
 Q2. Unforeseen obstacle
 - About reaction and management of this, recover and adapt, reflect and learn
 - Could be an expansion on q1 and same project
