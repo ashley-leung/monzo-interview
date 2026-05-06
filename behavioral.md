@@ -305,16 +305,36 @@ Strong signal
 
 ---
 
-Q4. Coaching and mentoring, 
+## Tell us about a time where you had to coach and mentor
+
+### Situation
+While working on the Digital Product Passport system at eBay, I introduced a Kafka-based architecture in a part of the organisation that primarily used Java/Spring.
+
+In the Web3 group, most engineers:
+- Had limited experience with Kafka in Node.js
+- Were starting to build event-driven systems independently
+- Risked inconsistent implementations and reliability issues
+
+I realised this wasn’t just a one-team problem — it would repeat across squads unless addressed systematically.
+
+### Task
+My goal was to raise the engineering standard across the org, not just solve my team’s problem.
+
+Specifically:
+- Enable other engineers to safely adopt Kafka
+- Prevent common pitfalls (data loss, poor observability, misconfigured consumers)
+- Create a repeatable, scalable approach to learning, not ad-hoc support
+
+### What we are looking for
 - proactive is better, multiple methods best adapt to the persons needs
 - Led to it, approach
 - Results and learnings
+- Mentorship as leverage
+- Mentorship is:
+    - Intentional
+    - Repeatable
+    - Outcome-driven
+    - Goes beyond onboarding.
 
-Mentorship as leverage
-Mentorship is:
-- Intentional
-- Repeatable
-- Outcome-driven
-- Goes beyond onboarding.
 Weak L40 signal
 Mentorship = helping someone get up to speed once.
