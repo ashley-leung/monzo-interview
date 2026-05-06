@@ -137,15 +137,21 @@ We had two options:
 - Fast fix: Use a third-party API (2 days, but no control or debuggability)
 - Robust fix: Build proactive gap-filling (2 weeks, but guarantees correctness)
 
-I chose the slower, more robust approach.
+I chose the slower, more robust approach because:
+- This system determined real-world rewards and brand trust
+- A third-party dependency would make failures unexplainable and unfixable
 
-Reasoning:
+The tradeoff was:
+Time-to-market:
+2 weeks implementation vs 2 days with third-party API
 
-This system determined real-world rewards and brand trust
-A third-party dependency would make failures unexplainable and unfixable
-99% accuracy wasn’t acceptable — we needed 100% correctness
+Simplicity and operational ease:
+Took on significant operational burden: monitoring gap-fill duration, RPC rate limits, startup latency
+Added complexity: chunked processing, checkpointing, error recovery, concurrent safety
+Needed runbooks for: startup taking >30 seconds, RPC provider outages, rate limit exhaustion
+third-party API would have eliminated all of this
 
-**Forthly**, I adapted the system design to replace reactive recovery with proactive gap-filling at startup:
+**Forthly**, I changed the system design to use proactive gap-filling at startup, instead of reactive:
 
 On restart, the system:
 - Checks the last processed blockchain block
@@ -167,12 +173,9 @@ Rare Edge Cases Become Common at Scale
 
 Lesson: "Rare" doesn't mean "won't happen" — it means "will happen eventually."
 
-Applied to future work:
-
-- Calculate expected failure rates over time, not per event
+This is applied to future work:
 - Design for the 100th deployment, not the 1st
 - Automated recovery for "rare" events you can't eliminate
-- Monitor for patterns across deployments, not just individual failures
 
 ### What they are looking for
 - About reaction and management of this, recover and adapt, reflect and learn
@@ -195,15 +198,14 @@ Strong signal
 ## Tell us about a time where you had to use persuasion
 
 ### Situation 
-In the Digital Product Passport system, we were preparing it for production which had complex flows across APIs, databases, and external services.
+In the Digital Product Passport system, it had multiple complex integrations with APIs, databases, and external services.
 
-The tech lead proposed we prioritise heavy end-to-end (E2E) test coverage to ensure reliability.
+The tech lead proposed we prioritise heavy on end-to-end (E2E) test coverage to ensure reliability.
 
 However, I felt this approach would:
 
 - Slow down development significantly
 - Be brittle and hard to maintain
-- Not give us fast feedback during iteration
 
 So there was a clear disagreement on testing strategy, with real delivery impact.
 
@@ -214,14 +216,15 @@ My goal was to align the team on a testing strategy that:
 - Scaled with system complexity
 - Didn’t create long-term maintenance overhead
 
-Importantly, I wasn’t the tech lead — so this required influencing direction, not just executing.
+Importantly, I wasn’t the tech lead — so this required influencing, not dictating.
 
 ### Action
 **First** Start with understanding, not arguing
 
-Instead of pushing my idea immediately, I asked:
+Instead of pushing my idea immediately and shooting down others, I listen and ask:
 
-“What risks are you most worried about that E2E tests would catch?”
+“Why"
+"What do you worry about most, where E2E tests would catch?”
 
 This surfaced that their main concern was:
 - Cross-service integration failures in production
@@ -240,18 +243,18 @@ This shifted the conversation from “which approach is better” → “what co
 
 I suggested a testing pyramid approach:
 
-- Heavy unit tests → fast, deterministic feedback
-- Integration tests → validate service boundaries
-- Targeted E2E tests → only for critical user journeys
+- Lots of fast unit tests
+- Some Integration tests
+- Few E2E tests for critical paths
 
 I explicitly compared both approaches:
 
 - E2E-heavy:
-   - ✅ High confidence in full flows
-   - ❌ Slow, flaky, expensive to maintain
+   - ✅ Have high confidence in full flows
+   - ❌ Have the tradeoff of Slow, flaky, expensive to maintain
 - Pyramid:
-   - ✅ Faster feedback, easier debugging, scalable
-   - ❌ Requires discipline to choose the right E2E coverage
+   - ✅ Have faster feedback, easier debugging, scalable
+   - ❌ Have the tradeoff of choosing the right E2E coverage
 
 **Fourthly** Used data and examples to persuade
 
@@ -261,9 +264,9 @@ Instead of opinion, I backed it with:
 - Industry best practices (testing pyramid widely adopted)
 - Our own system complexity — many external dependencies would make E2E brittle
 
-I also suggested a pragmatic compromise:
+I also suggested a compromise of:
 
-“Let’s identify the 2–3 highest-risk user journeys and keep E2E there, not everywhere.”
+“Let’s find the most important flow and keep E2E there, not everywhere.”
 
 **Fifthly** Managed the decision collaboratively
 
@@ -313,14 +316,14 @@ Strong signal
 ## Tell us about a time where you had to coach and mentor
 
 ### Situation
-While working on the Digital Product Passport system at eBay, I introduced a Kafka-based architecture in a part of the organisation that primarily used Java/Spring.
+While working on the Digital Product Passport system at eBay, I introduced a Kafka-based architecture where our business unit uses Node.JS but wider eBay organisation used Java.
 
 In the Web3 group, most engineers:
-- Had limited experience with Kafka in Node.js
+- Had no experience with Kafka or even Kafka in Node.js
 - Were starting to build event-driven systems independently
 - Risked inconsistent implementations and reliability issues
 
-I realised this wasn’t just a one-team problem — it would repeat across squads unless addressed systematically.
+I realised the problem would repeat across multiple squads unless addressed.
 
 ### Task
 My goal was to raise the engineering standard across the org, not just solve my team’s problem.
@@ -329,6 +332,28 @@ Specifically:
 - Enable other engineers to safely adopt Kafka
 - Prevent common pitfalls (data loss, poor observability, misconfigured consumers)
 - Create a repeatable, scalable approach to learning, not ad-hoc support
+
+### Action
+I used a combination of approaches, depending on how people learn:
+
+Structured talk (broad audience):
+- Delivered an engineering excellence session to the Web3 org on:
+    - Kafka fundamentals
+    - Scalability and failure modes
+    - Real production lessons (e.g. silent throttling, consumer lag)
+- Practical example (hands-on learners):
+    - Built a reference repository showing:
+    - How to implement a Kafka producer and consumer correctly
+    - Patterns for retries, offset management, and observability
+    - “What good looks like” in production
+- 1:1 support (targeted coaching):
+    - Helped engineers applying it in their own services, adapting guidance to their specific use cases
+
+### Result
+- 4 teams have successfully adopted Kafka using the patterns I introduced
+- Reduced onboarding time from weeks → days for new Kafka integrations
+- Prevented common production issues by standardising observability and error handling
+- Received inbound engagement — including engineers from the US reaching out for guidance — showing the approach scaled beyond my immediate team
 
 ### What we are looking for
 - proactive is better, multiple methods best adapt to the persons needs
