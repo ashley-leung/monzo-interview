@@ -185,21 +185,126 @@ Applied to future work:
 Strong signal
 “Here’s what went wrong, here’s what we told stakeholders, and here’s what changed.”
 
-Q3. Persuasion
+---
+
+## Tell us about a time where you had to use persuasion
+
+### Situation 
+In the Digital Product Passport system, we were preparing it for production which had complex flows across APIs, databases, and external services.
+
+The tech lead proposed we prioritise heavy end-to-end (E2E) test coverage to ensure reliability.
+
+However, I felt this approach would:
+
+- Slow down development significantly
+- Be brittle and hard to maintain
+- Not give us fast feedback during iteration
+
+So there was a clear disagreement on testing strategy, with real delivery impact.
+
+### Task
+My goal was to align the team on a testing strategy that:
+
+- Balanced confidence vs delivery speed
+- Scaled with system complexity
+- Didn’t create long-term maintenance overhead
+
+Importantly, I wasn’t the tech lead — so this required influencing direction, not just executing.
+
+### Action
+**First** Start with understanding, not arguing
+
+Instead of pushing my idea immediately, I asked:
+
+“What risks are you most worried about that E2E tests would catch?”
+
+This surfaced that their main concern was:
+
+Cross-service integration failures in production
+
+That helped me understand their position wasn’t about preference — it was about risk mitigation.
+
+**Secondly** Reframed the problem around shared goals
+
+I aligned us on the actual goal:
+
+“We both want high confidence in production, but also fast iteration speed.”
+
+This shifted the conversation from “which approach is better” → “what combination best achieves both”.
+
+**Thirdly** Proposed an alternative with clear trade-offs
+
+I suggested a testing pyramid approach:
+
+- Heavy unit tests → fast, deterministic feedback
+- Integration tests → validate service boundaries
+- Targeted E2E tests → only for critical user journeys
+
+I explicitly compared both approaches:
+
+- E2E-heavy:
+    ✅ High confidence in full flows
+    ❌ Slow, flaky, expensive to maintain
+- Pyramid:
+    ✅ Faster feedback, easier debugging, scalable
+    ❌ Requires discipline to choose the right E2E coverage
+
+**Fourthly** Used data and examples to persuade
+
+Instead of opinion, I backed it with:
+
+- Examples of flaky E2E pipelines slowing teams down
+- Industry best practices (testing pyramid widely adopted)
+- Our own system complexity — many external dependencies would make E2E brittle
+
+I also suggested a pragmatic compromise:
+
+“Let’s identify the 2–3 highest-risk user journeys and keep E2E there, not everywhere.”
+
+**Fifthly** Managed the decision collaboratively
+
+Rather than “winning” the argument, I:
+
+- Wrote down both approaches and trade-offs
+- Asked the tech lead to challenge my assumptions
+- Focused on what best serves the product, not individual preferences
+
+This helped us reach alignment without friction.
+
+## Result
+- We adopted a balanced testing pyramid strategy
+- Reduced test execution time significantly, improving developer velocity
+- Avoided flaky E2E pipelines while still covering critical flows
+- The approach scaled well as the system grew
+
+## Reflection
+What worked well was:
+- Listening first — understanding the root concern (risk, not preference)
+- Framing around shared goals rather than competing ideas
+- Using data and trade-offs, not opinions
+- Keeping ego out of the decision
+
+One thing I’d do even better:
+
+- Run a small proof of concept earlier (e.g. compare test runtimes or flakiness) to make the trade-off even more tangible
+
+### What they are looking for
 - Brought people to your way of thinkings. 
 - Find root cause and then finding out what matters to those objecting
 - Persuade about what?
 - Diverse perspectives, did they help to shape it
 - Tactics to convince, data and empathy are key, e.g. POC, demo, market research, presentation, spreadsheet, writing, informal chat, literature review, etc.) 
+- Stakeholder management beyond updates.
+- Proactively manages:
+    - Conflicting priorities
+    - Pushback
+    - Tradeoffs
+    - Influences direction, not just execution.
 
-Stakeholder management beyond updates.
-Proactively manages:
-- Conflicting priorities
-- Pushback
-- Tradeoffs
-- Influences direction, not just execution.
 Strong signal
 “Product wanted X, but we couldn’t safely deliver it in time, so I proposed Y.”
+
+---
 
 Q4. Coaching and mentoring, 
 - proactive is better, multiple methods best adapt to the persons needs
