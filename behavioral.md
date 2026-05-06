@@ -2,20 +2,18 @@
 ## "Tell me about a time where you led a complex project"
 
 ### Situation
-I led the delivery of a Digital Product Passport system for eBay in partnership with Breitling, enabling blockchain-verified ownership certificates for luxury watches.
+eBay partnered with Breitling, a luxury Swiss watch manufacturer to enable sellers to attach a blockchain-verified Digital Product Passport to their listings, allowing sellers to transfer ownership digitally to buyers after purchase.
 
 The problem was complex because I was integrating across:
 - 6 systems with internal teams, external teams and third-party provider (Wallet team, Portfolio team, Arianee, Federated GraphQL, VAS Events, Kafka)
 - No blockchain infra existed internally
-
-There was also had high ambiguity — unclear partner timelines, evolving requirements, and no prior blueprint inside eBay for Node.js.
+- High ambiguity — unclear partner timelines, evolving requirements, and no prior blueprint inside eBay for Node.js.
 
 ### Task
 I owned end-to-end delivery of the purchase-to-fulfilment flow, specifically:
 
-- Ensuring that when a watch was purchased and authenticated, ownership of the digital passport transferred correctly from seller → buyer
-- Designing a system that was correct, reliable, and observable, given this was tied to trust and high-value goods
-- Aligning multiple stakeholders across product, Web3, marketplace infrastructure, and external partners
+- Ensuring that when a watch was purchased, the digital passport transferred correctly from seller to buyer
+- Designing a system that was correct, reliable, and observable
 
 Success meant:
 - Zero incorrect ownership transfers
@@ -33,26 +31,37 @@ This helped align stakeholders and guided architecture decisions.
 
 We needed to choose the event source for triggering transfers:
 
-- Option A: Payment event (faster, simpler, but wrong abstraction)
-- Option B: Program-specific purchase event via Kafka (slower, more complex, but correct)
+- Option A: Payment event (faster and simpler because of existing webhook infrastructure with built-in retries and event tracking)
+- Option B: Program-specific purchase event via Kafka (slower and more complex because I had to build NodeJS Kafka consumer from scratch whilst eBay’s ecosystem is in Java)
 
-I chose Option B, even though it delayed us by ~3–4 weeks.
+Chose Option B: Optimized for correctness and simplicity of business logic over speed and operational ease.
 
-My reasoning:
+Why correctness mattered more:
 
-- Payment success ≠ order completion (risk of incorrect transfers)
-- Kafka stream already contained enriched, filtered data
-- Avoided rebuilding complex logic (“shadow enrichment”) in our service
+- Option A is a finance signal (“payment succeeded”), not the right semantic boundary
+- Option B is an event that is already enriched with the needed properties
+- Using Option A would mean building enrichment logic inside my service — creating a “shadow enrichment layer” that duplicates existing work
 
-I explicitly reset expectations with product:
-We are trading short-term delivery for long-term system integrity.
+Why simplicity of business logic mattered more:
+
+- Avoiding shadow enrichment keeps the service thin and focused on DPP transfer logic only
+- Option A would bloat the service with OMS integration code to reconstruct what the existing enrichment service already computes
+
+The trade off was:
+Speed:
+- 3-4 weeks building Kafka consumer (connection management, group IDs, offset commits, retry semantics)
+- Delayed production launch vs. using existing HTTP webhook
+
+Operability (initially):
+- Built from scratch: consumer lag metrics, dead-letter handling, dashboards/alerts, operational runbooks
+- No existing battle-tested NodeJS Kafka framework at eBay (Java/Spring was standard)
 
 **Thirdly**, I drove cross-team alignment with:
 
-- Product → scope and timelines
-- Internal Web3 teams → event contracts (wallet, portfoolio)
-- External marketplace teams → Federated GraphQL
-- 3rd party (Arianee) → blockchain integration
+- Product, to align scope and timelines
+- Internal Web3 teams, to align event contracts (wallet, portfoolio)
+- External marketplace teams, to align Federated GraphQL schema
+- 3rd party (Arianee), to implement blockchain integration
 
 To keep alignment:
 
@@ -64,9 +73,9 @@ Created 13+ runbooks so other teams could operate and reuse the system
 Even though the partnership was later paused for commercial reasons, the system delivered strong technical outcomes:
 
 - 100% of eligible transactions processed with zero data loss
-- Consumer lag reduced to <30 seconds under load
-- On-call incidents dropped from ~3/week → <1/month
 - Architecture became the template for the next partnership, reducing their ramp-up from weeks to days
+- Consumer lag reduced from 60,000 to 100
+- Shared knowledge through company wide Engineering excellance talks about kafka
 
 ### Reflection
 I realised I treated this as a guaranteed partnership rather than a platform investment with risk.
@@ -93,9 +102,7 @@ Strong signal
 --- 
 ## "Tell me about a time where there was an unforeseen obstacle"
 ### Situation
-I was responsible for the production reliability of a blockchain indexer at eBay, which tracked NFT ownership for a digital collectibles platform tied to major brand campaigns like The Lord of the Rings and Harry Potter.
-
-This data directly determined whether users could redeem physical rewards, so correctness was critical — even small gaps meant users either couldn’t claim rewards or could claim incorrectly.
+eBay launched a digital collectibles platform where users could collect NFT trading cards and redeem them for physical rewards from premium brand partners like Lord of the Rings and Harry Potter. Users had to own specific NFT cards to be eligible for physical reward redemption. Our blockchain indexer tracked NFT ownership to determine eligibility.
 
 ### Task
 My goal was to ensure 100% data completeness and reliability in production.
@@ -114,16 +121,14 @@ I traced the issue to a race condition during deployments. When the indexer rest
 
 **Secondly**, I communicated early and reset expectations
 
-I immediately told stakeholders (Portfolio + Product):
-
-“We have a data correctness issue during deployments — users can temporarily lose visibility of assets. It self-recovers, but the delay is unacceptable for reward eligibility.”
+I immediately told stakeholders (Portfolio + Product) that we have a data correctness issue during deployments where users can temporarily lose visibility of assets
 
 I was explicit about:
 - What went wrong (missed events during restart)
 - User impact (incorrect ownership view)
 - Short-term reality (not safe to launch campaigns yet)
 
-This helped pause downstream assumptions and avoided a bad user experience.
+This helped pause downstream assumptions.
 
 **Thirdly**, I made a decision under time pressure
 
